@@ -19,7 +19,4 @@ __pycache__/
 .tmp/
 tmp/
 
-# Local state file during development
-kaggle_seen_competitions.json
-
 docs/
