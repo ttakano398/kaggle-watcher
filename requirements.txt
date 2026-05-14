@@ -1,0 +1,3 @@
+kaggle
+requests
+python-dotenv

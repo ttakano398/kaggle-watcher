@@ -1,0 +1,25 @@
+# Python virtual environment
+.venv/
+
+# Environment variables / secrets
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Local temporary files
+.tmp/
+tmp/
+
+# Local state file during development
+kaggle_seen_competitions.json
+
+docs/
