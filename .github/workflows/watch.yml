@@ -47,6 +47,6 @@ jobs:
         run: |
           git config user.name "kaggle-watch-bot"
           git config user.email "kaggle-watch-bot@example.com"
-          git add kaggle_seen_competitions.json
+          git add -f kaggle_seen_competitions.json
           git diff --cached --quiet || git commit -m "Update seen Kaggle competitions"
           git push origin HEAD:master
