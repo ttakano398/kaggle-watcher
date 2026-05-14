@@ -1,0 +1,52 @@
+name: Watch Kaggle Competitions
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # JST 09:00
+  workflow_dispatch:
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Prepare Kaggle credentials
+        run: |
+          mkdir -p ~/.kaggle
+          printf '%s' "${{ secrets.KAGGLE_API_TOKEN }}" > ~/.kaggle/access_token
+          chmod 600 ~/.kaggle/access_token
+
+      - name: Run watcher
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          STATE_PATH: kaggle_seen_competitions.json
+          NOTIFY_ON_FIRST_RUN: "0"
+        run: |
+          python watch_kaggle_competitions.py
+
+      - name: Commit state
+        run: |
+          git config user.name "kaggle-watch-bot"
+          git config user.email "kaggle-watch-bot@example.com"
+          git add kaggle_seen_competitions.json
+          git diff --cached --quiet || git commit -m "Update seen Kaggle competitions"
+          git push origin HEAD:master
