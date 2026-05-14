@@ -166,7 +166,7 @@ def post_to_slack(new_items: list[CompetitionInfo]) -> None:
         raise RuntimeError("SLACK_WEBHOOK_URL is not set")
 
     lines = [
-        ":bell: *New Kaggle competitions matched your watch keywords*",
+        ":bell: *Kaggle 新規コンペを検出しました*",
         "",
     ]
 
