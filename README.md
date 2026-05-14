@@ -1,38 +1,41 @@
 # Kaggle Competition Watcher
 
-Kaggle Competitions から特定キーワードに一致する新規コンペを検知し、Slack Incoming Webhook に通知する Bot を段階的に実装するプロジェクトです。
+Kaggle の Competitions を定期チェックし、指定キーワードに一致する新規コンペがあれば Slack に通知する Bot です。
 
-このリポジトリでは、[docs/kaggle_watcher_codex_step0.md](docs/kaggle_watcher_codex_step0.md) の指示に従い、Step 1 以降を 1 ステップずつ進めます。
+## 概要
 
-## Step 0
+- Kaggle API でコンペ一覧を検索
+- `KEYWORDS` と `CATEGORIES` に一致するコンペを抽出
+- `kaggle_seen_competitions.json` で通知済みの `ref` を管理
+- 新規コンペだけ Slack Incoming Webhook に通知
+- GitHub Actions で毎日 JST 09:00 に実行
 
-Step 0 は全体設計の確認です。まだ watcher 本体、Python 仮想環境、Slack Webhook、Kaggle API token、GitHub Actions workflow は作成しません。
+## 必要な Secrets
 
-次に進めるときは、以下のように依頼してください。
-
-```text
-Step 1 を進めて
-```
-
-## 重要な注意
-
-- Slack Webhook URL はコードや README に直書きしない
-- Kaggle API key はコードや README に直書きしない
-- `.env` や `kaggle.json` は git 管理しない
-- ユーザーが指定した Step だけを実装する
-
-## 想定する最終構成
+GitHub Actions では以下を設定します。
 
 ```text
-kaggle-watcher/
-├── .github/
-│   └── workflows/
-│       └── watch.yml
-├── docs/
-│   └── kaggle_watcher_codex_step0.md
-├── watch_kaggle_competitions.py
-├── requirements.txt
-├── .gitignore
-├── README.md
-└── kaggle_seen_competitions.json
+KAGGLE_API_TOKEN
+SLACK_WEBHOOK_URL
 ```
+
+## ローカル実行
+
+```bash
+pip install -r requirements.txt
+python watch_kaggle_competitions.py
+```
+
+ローカルでは `.env` に以下を設定できます。
+
+```env
+SLACK_WEBHOOK_URL="https://hooks.slack.com/services/..."
+STATE_PATH="kaggle_seen_competitions.json"
+NOTIFY_ON_FIRST_RUN=0
+```
+
+## ファイル
+
+- `watch_kaggle_competitions.py`: 監視スクリプト
+- `.github/workflows/watch.yml`: 定期実行 workflow
+- `kaggle_seen_competitions.json`: 通知済みコンペの状態ファイル
